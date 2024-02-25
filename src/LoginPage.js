@@ -5,6 +5,7 @@ export default function LoginPage() {
   const [loginData, setLoginData] = useState({});
   const [submitted, setSubmitted] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
+  const [fileLink, setFileLink] = useState(null);
 
   function handleChange(event) {
     setLoginData({ ...loginData, [event.target.name]: event.target.value });
@@ -14,6 +15,7 @@ export default function LoginPage() {
     event.preventDefault();
     setSubmitted(true);
     sendLoginData(loginData);
+    generateFileLink(loginData);
   }
   function sendLoginData(loginData) {
     const jsonData = JSON.stringify(loginData);
@@ -34,8 +36,22 @@ export default function LoginPage() {
       })
       .catch((error) => {
         console.error("Error submitting login:", error);
-        setErrorMessage("Error submitting data");
+        setErrorMessage("Error submitting data to server");
       });
+  }
+
+  function generateFileLink(loginData) {
+    const file = new Blob([JSON.stringify(loginData)], {
+      type: "application/json",
+    });
+    setFileLink(URL.createObjectURL(file));
+  }
+
+  function saveToFile() {
+    const link = document.createElement("a");
+    link.href = fileLink;
+    link.download = "login-details.json";
+    link.click();
   }
 
   function SuccessMessage() {
@@ -61,7 +77,20 @@ export default function LoginPage() {
       <input type="submit" placeholder="Submit" />
     </form>
   );
-  if (submitted) {
+  if (fileLink && submitted) {
+    return (
+      <div>
+        <div className="mt-5">
+          {form}
+          <p className="mt-3">
+            Login Details:{" "}
+            <button className="rounded"onClick={saveToFile}>Download</button>
+          </p>
+        </div>
+        {errorMessage && <div className="text-danger">{errorMessage}</div>}
+      </div>
+    );
+  } else if (submitted) {
     return (
       <div>
         <div className="mt-5">{form}</div>
@@ -72,3 +101,4 @@ export default function LoginPage() {
     return <div className="mt-5">{form}</div>;
   }
 }
+ 
