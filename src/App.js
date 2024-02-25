@@ -1,9 +1,11 @@
 
 import './App.css';
+import LoginPage from './LoginPage';
 
 function App() {
   return (
-    <div className="App">
+    <div className="App text-center" >
+      <LoginPage/>
     </div>
   );
 }
