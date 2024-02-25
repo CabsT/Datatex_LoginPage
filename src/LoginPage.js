@@ -39,7 +39,7 @@ export default function LoginPage() {
   }
 
   function SuccessMessage() {
-    alert("Login submitted succesfully");
+    alert("Login submitted successfully");
   }
 
   let form = (
